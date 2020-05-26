@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
+var Game = require('../controllers/game.js');
 
-/* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  res.json(Game.getRooms());
 });
 
 module.exports = router;

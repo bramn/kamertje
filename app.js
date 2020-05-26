@@ -7,7 +7,7 @@ var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var gameRouter = require('./routes/game');
 
 // Express
 var app = express();
@@ -20,9 +20,9 @@ app.io = io;
 io.on("connection", function (socket) {
   console.log("A user connected");
 
-  socket.on('chat message', (msg) => {
-    io.emit('muur', msg); // This will emit the event to all connected sockets
-    console.log('message: ' + msg);
+  socket.on('updateRoom', (data) => {
+    io.emit('updateRoom', data); // This will emit the event to all connected sockets
+    console.log('updateRoom: ' + data);
   });
 });
 
@@ -43,7 +43,7 @@ app.use(sassMiddleware({
 app.use(express.static(path.join('public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/game', gameRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

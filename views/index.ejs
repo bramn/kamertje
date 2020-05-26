@@ -78,9 +78,18 @@
       border-radius: 5px;
       border: 1px solid #ddd;
       display: block;
+      width: inherit;
+      height: inherit;
     }
     .muur:hover {
       background-color: #000;
+    }
+    .other, .muur:disabled {
+      cursor: not-allowed;
+      background-color: red;
+    }
+    .mine {
+      background-color: blue;
     }
     .top {
       top: 0;
@@ -110,9 +119,9 @@
   <body>
   <div id="kamertje">
     <ul class="building">
-      <li v-for="n in nr_of_kamers" class="kamer">
-        <template v-for="positie in ['top', 'right', 'bottom', 'left']">
-          <a href="#" @click="updateKamer(n, positie)" :class="['muur', positie]"></a>
+      <li v-for="(room, roomNumber) in rooms" class="kamer">
+        <template v-for="wall in ['top', 'right', 'bottom', 'left']">
+          <button href="#" @click="updateKamer(roomNumber, wall)" :disabled="room[wall] == 'other'" :class="['muur', wall, room[wall]]"></button>
         </template>
       </li>
     </ul>

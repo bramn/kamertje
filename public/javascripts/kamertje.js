@@ -3,16 +3,35 @@ var socket = io();
 new Vue({
   el: '#kamertje',
   data: {
-    nr_of_kamers: 9,
+    rooms: [
+      { top: '', bottom: '', left: '', right: ''},
+      { top: '', bottom: '', left: '', right: ''},
+      { top: '', bottom: '', left: '', right: ''},
+
+      { top: '', bottom: '', left: '', right: ''},
+      { top: '', bottom: '', left: '', right: ''},
+      { top: '', bottom: '', left: '', right: ''},
+
+      { top: '', bottom: '', left: '', right: ''},
+      { top: '', bottom: '', left: '', right: ''},
+      { top: '', bottom: '', left: '', right: ''}
+    ]
   },
   mounted: function () {
-    socket.on('muur', function(msg){
-      console.log(msg);
+    var self = this;
+
+    // Connect to socket.io
+    socket.on('updateRoom', function(data){
+      self.rooms[data.roomNumber][data.wall] = 'other';
     });
+
+    // Retrieve game state
+
   },
   methods: {
-    updateKamer: function(kamerNummer, muur) {
-      socket.emit('chat message', 'kamerNummer en muur' + kamerNummer + '/' + muur);
+    updateKamer: function(roomNumber, wall) {
+      this.rooms[roomNumber][wall] = 'mine';
+      socket.emit('updateRoom', { roomNumber: roomNumber, wall: wall });
     }
   }
 })
