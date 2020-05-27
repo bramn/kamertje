@@ -13,7 +13,7 @@ connection.connect(function (err) {
   }
 });
 
-const getGame = function() {
+const getGame = function () {
   return new Promise((resolve, reject) => {
     connection.query('SELECT * FROM games', function (err, rows) {
       if (err) {
@@ -24,6 +24,34 @@ const getGame = function() {
     });
   });
 }
+
+const resetGame = function () {
+  return new Promise((resolve, reject) => {
+    let query = mysql.format('UPDATE games SET to_move = ?, player_one = ?, player_two = ?', [null, null, null])
+
+    connection.query(query, function (err, rows) {
+      if (err) {
+        return reject(err)
+      } else {
+        resolve(rows)
+      }
+    });
+  });
+};
+
+const resetRooms = function () {
+  return new Promise((resolve, reject) => {
+    let query = mysql.format('UPDATE rooms SET rightWall=?, topWall=?, bottomWall=?, leftWall=?', [null, null, null, null])
+
+    connection.query(query, function (err, rows) {
+      if (err) {
+        return reject(err)
+      } else {
+        resolve(rows)
+      }
+    });
+  });
+};
 
 const getRooms = function () {
   return new Promise((resolve, reject) => {
@@ -37,7 +65,7 @@ const getRooms = function () {
   });
 }
 
-const updateGamePlayers = function(player) {
+const updateGamePlayers = function (player) {
   return new Promise((resolve, reject) => {
     let otherPlayer = (player == 'red') ? 'blue' : 'red';
     let query = mysql.format('UPDATE games SET to_move = ?, player_one = ?, player_two = ?', [player, player, otherPlayer])
@@ -117,6 +145,8 @@ const updateRoom = function (values) {
 module.exports = {
   getGame,
   getRooms,
+  resetGame,
+  resetRooms,
   updateRoom,
   updateGamePlayers,
   updateToMove
