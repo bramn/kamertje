@@ -31,7 +31,7 @@ new Vue({
   methods: {
     updateKamer: function(roomNumber, wall) {
       this.rooms[roomNumber][wall] = 'mine';
-      socket.emit('updateRoom', { roomNumber: roomNumber, wall: wall });
+      socket.emit('updateRoom', { number: roomNumber, wall: wall });
     }
   }
 })

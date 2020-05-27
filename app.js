@@ -16,13 +16,17 @@ var app = express();
 var io = socket_io();
 app.io = io;
 
+var Game = require('./controllers/game.js');
+
 // socket.io events
 io.on("connection", function (socket) {
   console.log("A user connected");
 
-  socket.on('updateRoom', (data) => {
-    io.emit('updateRoom', data); // This will emit the event to all connected sockets
-    console.log('updateRoom: ' + data);
+  socket.on('updateRoom', (room) => {
+    io.emit('updateRoom', room); // This will emit the event to all connected sockets
+
+    Game.updateRoom(room.number, room.wall);
+    console.log('updateRoom: ' + room);
   });
 });
 

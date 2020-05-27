@@ -26,6 +26,20 @@ const getRooms = function () {
   });
 }
 
+const updateRoom = function(roomNumber, wall) {
+  return new Promise((resolve, reject) =>  {
+    const sql = `UPDATE rooms SET ${wall}Wall='iets' WHERE number = ${roomNumber}`;
+    connection.query(sql, function (err, result) {
+      if (err) {
+        return reject(err)
+      } else {
+        console.log(result);
+      }
+    });
+  });
+}
+
 module.exports = {
-  getRooms
+  getRooms,
+  updateRoom
 }
