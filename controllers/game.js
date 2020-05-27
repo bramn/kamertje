@@ -20,7 +20,7 @@ const getGame = function() {
       if (err) {
         return reject(err)
       } else {
-        resolve(rows)
+        resolve(rows[0])
       }
     });
   });

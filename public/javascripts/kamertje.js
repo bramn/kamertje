@@ -49,12 +49,12 @@ new Vue({
       const game = await response.json();
 
       this.rooms = game.rooms;
-      this.to_move = game[0].to_move;
+      this.to_move = game.to_move;
 
       if (localStorage.player !== undefined) {
-        if (game[0][localStorage.player] !== null) {
+        if (game[localStorage.player] !== null) {
           this.player = localStorage.player;
-          this.playerColor = game[0][localStorage.player];
+          this.playerColor = game[localStorage.player];
         }
       }
     },
