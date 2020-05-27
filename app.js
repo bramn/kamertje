@@ -22,9 +22,12 @@ var Game = require('./controllers/game.js');
 io.on("connection", function (socket) {
   console.log("A user connected");
 
-  socket.on('updateRoom', (data) => {
-    io.emit('updateRoom', data);
-    Game.updateRoom(data.number, data.wall, data.playerColor);
+  socket.on('updateRoom', (values) => {
+    io.emit('updateRoom', values);
+    Game.updateRoom(values).then(otherValues => {
+      if (Object.keys(otherValues).length === 3)
+        io.emit('updateRoom', otherValues);
+    });
   });
 });
 

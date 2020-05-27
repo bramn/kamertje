@@ -27,46 +27,49 @@ const getRooms = function () {
   });
 }
 
-const updateRoom = function (roomNumber, wall, playerColor) {
+const updateRoom = function (values) {
   // Which other possible wall do we also need to color?
-  let otherRoomNumber = 0, otherWall, otherValues = [];
+  let otherRoomNumber = 0, otherWall, otherValues = {};
 
-  switch (wall) {
-    case 'top':
-      otherRoomNumber = roomNumber - 3;
-      otherWall = 'bottom';
+  switch (values.wall) {
+    case 'topWall':
+      otherRoomNumber = values.number - 3;
+      otherWall = 'bottomWall';
       break;
-    case 'right':
-      if (roomNumber % 3 != 0)
-        otherRoomNumber = roomNumber + 1;
-      otherWall = 'left';
+    case 'rightWall':
+      if (values.number % 3 !== 0)
+        otherRoomNumber = values.number + 1;
+      otherWall = 'leftWall';
       break;
-    case 'bottom':
-      otherRoomNumber = roomNumber + 3;
-      otherWall = 'top';
+    case 'bottomWall':
+      otherRoomNumber = values.number + 3;
+      otherWall = 'topWall';
       break;
-    case 'left':
-      if (roomNumber % 3 != 1)
-        otherRoomNumber = roomNumber - 1;
-      otherWall = 'right';
+    case 'leftWall':
+      if (values.number % 3 !== 1)
+        otherRoomNumber = values.number - 1;
+      otherWall = 'rightWall';
       break;
   }
   if (otherRoomNumber > 0 && otherRoomNumber <= 9) {
-    otherValues = [`${otherWall}Wall`, playerColor, otherRoomNumber]
+    otherValues = {
+      wall: otherWall,
+      playerColor: values.playerColor,
+      number: otherRoomNumber
+    }
   }
 
   let sql = "UPDATE rooms SET ?? = ? WHERE number = ?;"
-  let values = [`${wall}Wall`, playerColor, roomNumber]
-  let queries = mysql.format(sql, values);
-  if (otherValues.length == 3)
-    queries += mysql.format("UPDATE rooms SET ?? = ? WHERE number = ?", otherValues);
+  let queries = mysql.format(sql, [values.wall, values.playerColor, values.number]);
+  if (Object.keys(otherValues).length === 3)
+    queries += mysql.format(sql, [otherValues.wall, otherValues.playerColor, otherValues.number]);
 
   return new Promise((resolve, reject) => {
-    connection.query(queries, function (err, result) {
+    connection.query(queries, function (err) {
       if (err) {
         return reject(err)
       } else {
-        console.log(result);
+        resolve(otherValues)
       }
     });
   });
