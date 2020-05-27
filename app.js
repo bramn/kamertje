@@ -23,7 +23,6 @@ io.on("connection", function (socket) {
   console.log("A user connected");
 
   socket.on('updateRoom', (data) => {
-    console.log('updateRoom: ' + data);
     io.emit('updateRoom', data);
     Game.updateRoom(data.number, data.wall, data.playerColor);
   });
