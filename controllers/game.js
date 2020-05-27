@@ -15,6 +15,18 @@ connection.connect(function (err) {
   console.log('connected as id ' + connection.threadId);
 });
 
+const getGame = function() {
+  return new Promise((resolve, reject) => {
+    connection.query('SELECT * FROM games', function (err, rows) {
+      if (err) {
+        return reject(err)
+      } else {
+        resolve(rows)
+      }
+    });
+  });
+}
+
 const getRooms = function () {
   return new Promise((resolve, reject) => {
     connection.query('SELECT * FROM rooms', function (err, rows, fields) {
@@ -76,6 +88,7 @@ const updateRoom = function (values) {
 }
 
 module.exports = {
+  getGame,
   getRooms,
   updateRoom
 }

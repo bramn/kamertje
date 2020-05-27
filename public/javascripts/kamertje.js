@@ -29,8 +29,9 @@ new Vue({
       socket.emit('updateRoom', { number: roomNumber, wall: wall, playerColor: this.playerColor });
     },
     async getRooms() {
-      const rooms = await fetch('/game');
-      this.rooms = await rooms.json();
+      const response = await fetch('/game');
+      const game = await response.json();
+      this.rooms = game.rooms;
     },
     checkWall(roomNumber, wall) {
       if (this.playerColor.length == 0)
