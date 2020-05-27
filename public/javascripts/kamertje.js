@@ -73,11 +73,23 @@ new Vue({
         room.topWall === color & room.rightWall === color & room.bottomWall === color & room.leftWall === color
       ).length
     },
+    allRoomsTaken() {
+      let roomsTaken = this.rooms.filter(room => [room.topWall, room.rightWall, room.bottomWall, room.leftWall].every((wall) => wall !== null))
+      return roomsTaken.length == 9;
+    },
     winner() {
       if(this.nrOfRooms('red') > 4) {
         return 'Red';
       } else if (this.nrOfRooms('blue') > 4) {
         return 'Blue';
+      } else if (this.allRoomsTaken()) {
+        if(this.nrOfRooms('red') > this.nrOfRooms('blue')) {
+          return 'Red';
+        } else if (this.nrOfRooms('red') < this.nrOfRooms('blue')) {
+          return 'Blue';
+        } else {
+          return 'Nobody';
+        }
       }
       return '';
     }
