@@ -22,11 +22,10 @@ var Game = require('./controllers/game.js');
 io.on("connection", function (socket) {
   console.log("A user connected");
 
-  socket.on('updateRoom', (room) => {
-    io.emit('updateRoom', room); // This will emit the event to all connected sockets
-
-    Game.updateRoom(room.number, room.wall);
-    console.log('updateRoom: ' + room);
+  socket.on('updateRoom', (data) => {
+    console.log('updateRoom: ' + data);
+    io.emit('updateRoom', data);
+    Game.updateRoom(data.number, data.wall, data.playerColor);
   });
 });
 

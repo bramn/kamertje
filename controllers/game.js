@@ -26,9 +26,9 @@ const getRooms = function () {
   });
 }
 
-const updateRoom = function(roomNumber, wall) {
+const updateRoom = function(roomNumber, wall, playerColor) {
   return new Promise((resolve, reject) =>  {
-    const sql = `UPDATE rooms SET ${wall}Wall='iets' WHERE number = ${roomNumber}`;
+    const sql = `UPDATE rooms SET ${wall}Wall='${playerColor}' WHERE number = ${roomNumber}`;
     connection.query(sql, function (err, result) {
       if (err) {
         return reject(err)

@@ -84,12 +84,14 @@
     .muur:hover {
       background-color: #000;
     }
-    .other, .muur:disabled {
+    .muur:disabled {
       cursor: not-allowed;
-      background-color: red;
     }
-    .mine {
+    .muur.blue {
       background-color: blue;
+    }
+    .muur.red {
+      background-color: red;
     }
     .top {
       top: 0;
@@ -118,10 +120,17 @@
   </style>
   <body>
   <div id="kamertje">
+    <h2>Pick your color:</h2>
+    <label for="red"><input v-model="playerColor" type="radio" id="red" value="red" />Red</label>
+    <label for="blue"><input v-model="playerColor" type="radio" id="blue" value="blue" />Blue</label>
+
+    <h2>Building</h2>
     <ul class="building">
-      <li v-for="(room, roomNumber) in rooms" class="kamer">
+      <li v-for="room in sortedRooms" class="kamer">
         <template v-for="wall in ['top', 'right', 'bottom', 'left']">
-          <button href="#" @click="updateKamer(roomNumber, wall)" :disabled="room[wall] == 'other'" :class="['muur', wall, room[wall]]"></button>
+          <button href="#" @click="updateRoom(room.number, wall)"
+                  :disabled="checkWall(room.number, wall)"
+                  :class="['muur', wall, room[`${wall}Wall`]]"></button>
         </template>
       </li>
     </ul>
