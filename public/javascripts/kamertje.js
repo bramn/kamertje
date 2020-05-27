@@ -4,18 +4,28 @@ new Vue({
   el: '#kamertje',
   data: {
     playerColor: '',
+    player: '',
+    to_move: '',
     rooms: []
   },
   mounted: function () {
     let self = this;
 
-    // Connect to socket.io
     socket.on('updateRoom', function(data){
-      let room = self.rooms.filter(room => room.number == data.number)[0]
+      let room = self.rooms.filter(room => room.number == data.number)[0];
       room[data.wall] = data.playerColor;
+      self.to_move = (data.playerColor == 'red') ? 'blue': 'red';
     });
 
-    this.getRooms();
+    // This message is only received once, when the other is quicker with selecting a color
+    socket.on('updateGame', function(data){
+      self.playerColor = data.playerColor;
+      self.to_move = (data.playerColor == 'red') ? 'blue': 'red';
+      self.player = 'player_two';
+      localStorage.player = 'player_two';
+    });
+
+    this.getGame();
   },
   computed: {
     sortedRooms() {
@@ -28,15 +38,32 @@ new Vue({
       room[wall] = this.playerColor;
       socket.emit('updateRoom', { number: roomNumber, wall: wall, playerColor: this.playerColor });
     },
-    async getRooms() {
+    updateGame(player) {
+      socket.emit('updateGame', { playerColor: player });
+      localStorage.player = 'player_one';
+      this.player = 'player_one';
+      this.to_move = player;
+    },
+    async getGame() {
       const response = await fetch('/game');
       const game = await response.json();
+
       this.rooms = game.rooms;
+      this.to_move = game[0].to_move;
+
+      if (localStorage.player !== undefined) {
+        if (game[0][localStorage.player] !== null) {
+          this.player = localStorage.player;
+          this.playerColor = game[0][localStorage.player];
+        }
+      }
     },
     checkWall(roomNumber, wall) {
       if (this.playerColor.length == 0)
         return true;
       if (this.winner().length > 0)
+        return true;
+      if(this.to_move !== this.playerColor)
         return true;
 
       let room = this.rooms.filter(room => room.number === roomNumber)[0];

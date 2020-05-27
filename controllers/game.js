@@ -12,7 +12,6 @@ connection.connect(function (err) {
     console.error('error connecting: ' + err.stack);
     return;
   }
-  console.log('connected as id ' + connection.threadId);
 });
 
 const getGame = function() {
@@ -30,6 +29,35 @@ const getGame = function() {
 const getRooms = function () {
   return new Promise((resolve, reject) => {
     connection.query('SELECT * FROM rooms', function (err, rows, fields) {
+      if (err) {
+        return reject(err)
+      } else {
+        resolve(rows)
+      }
+    });
+  });
+}
+
+const updateGamePlayers = async function(player) {
+  return new Promise((resolve, reject) => {
+    let otherPlayer = (player == 'red') ? 'blue' : 'red';
+    let query = mysql.format('UPDATE games SET to_move = ?, player_one = ?, player_two = ?', [player, player, otherPlayer])
+
+    connection.query(query, function (err, rows, fields) {
+      if (err) {
+        return reject(err)
+      } else {
+        resolve(rows)
+      }
+    });
+  });
+};
+
+const updateToMove = function (toMove) {
+  return new Promise((resolve, reject) => {
+    let query = mysql.format('UPDATE games SET to_move = ?', [toMove])
+
+    connection.query(query, function (err, rows, fields) {
       if (err) {
         return reject(err)
       } else {
@@ -90,5 +118,7 @@ const updateRoom = function (values) {
 module.exports = {
   getGame,
   getRooms,
-  updateRoom
+  updateRoom,
+  updateGamePlayers,
+  updateToMove
 }

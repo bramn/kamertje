@@ -22,12 +22,23 @@ var Game = require('./controllers/game.js');
 io.on("connection", function (socket) {
   console.log("A user connected");
 
-  socket.on('updateRoom', (values) => {
+  socket.on('updateRoom', async (values) => {
+    let otherValues = await Game.updateRoom(values);
+    let toMove = (values.playerColor == 'red') ? 'blue': 'red'
+    await Game.updateToMove(toMove);
+
     io.emit('updateRoom', values);
-    Game.updateRoom(values).then(otherValues => {
-      if (Object.keys(otherValues).length === 3)
-        io.emit('updateRoom', otherValues);
-    });
+    if (Object.keys(otherValues).length === 3) {
+      io.emit('updateRoom', otherValues);
+    }
+  });
+
+  socket.on('updateGame', async (values) => {
+    await Game.updateGamePlayers(values.playerColor);
+
+    // send msg to the other player with its chosen color
+    let otherPlayerColor = (values.playerColor == 'red') ? 'blue': 'red';
+    socket.broadcast.emit('updateGame', { playerColor: otherPlayerColor})
   });
 });
 

@@ -121,9 +121,13 @@
   <body>
   <div id="kamertje">
     <div v-if="winner().length > 0" class="win">{{ winner() }} wins</div>
-    <h2>Pick your color:</h2>
-    <label for="red"><input v-model="playerColor" type="radio" id="red" value="red" />Red</label>
-    <label for="blue"><input v-model="playerColor" type="radio" id="blue" value="blue" />Blue</label>
+
+    <div v-if="(playerColor.length == 0)">
+      <h2>Pick your color:</h2>
+      <label for="red"><input v-model="playerColor" type="radio" id="red" @click="updateGame('red')" value="red" />Red</label>
+      <label for="blue"><input v-model="playerColor" type="radio" id="blue" @click="updateGame('blue')" value="blue" />Blue</label>
+    </div>
+    <div v-else>You're playing with: {{ playerColor }}</div>
 
     <h2>Building</h2>
     <ul class="building">
