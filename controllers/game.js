@@ -27,7 +27,7 @@ const getGame = function () {
 
 const resetGame = function () {
   return new Promise((resolve, reject) => {
-    let query = mysql.format('UPDATE games SET to_move = ?, player_one = ?, player_two = ?', [null, null, null])
+    let query = mysql.format('UPDATE games SET current_player = ?, player_one = ?, player_two = ?', [null, null, null])
 
     connection.query(query, function (err, rows) {
       if (err) {
@@ -68,7 +68,7 @@ const getRooms = function () {
 const updateGamePlayers = function (player) {
   return new Promise((resolve, reject) => {
     let otherPlayer = (player == 'red') ? 'blue' : 'red';
-    let query = mysql.format('UPDATE games SET to_move = ?, player_one = ?, player_two = ?', [player, player, otherPlayer])
+    let query = mysql.format('UPDATE games SET current_player = ?, player_one = ?, player_two = ?', [player, player, otherPlayer])
 
     connection.query(query, function (err, rows) {
       if (err) {
@@ -80,9 +80,9 @@ const updateGamePlayers = function (player) {
   });
 };
 
-const updateToMove = function (toMove) {
+const updateCurrentPlayer = function (player) {
   return new Promise((resolve, reject) => {
-    let query = mysql.format('UPDATE games SET to_move = ?', [toMove])
+    let query = mysql.format('UPDATE games SET current_player = ?', [player])
 
     connection.query(query, function (err, results) {
       if (err) {
@@ -149,5 +149,5 @@ module.exports = {
   resetRooms,
   updateRoom,
   updateGamePlayers,
-  updateToMove
+  updateCurrentPlayer
 }

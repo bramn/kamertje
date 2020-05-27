@@ -24,8 +24,8 @@ io.on("connection", function (socket) {
 
   socket.on('updateRoom', async (values) => {
     let otherValues = await Game.updateRoom(values);
-    let toMove = (values.playerColor == 'red') ? 'blue': 'red'
-    await Game.updateToMove(toMove);
+    let player = (values.playerColor == 'red') ? 'blue': 'red'
+    await Game.updateCurrentPlayer(player);
 
     io.emit('updateRoom', values);
     if (Object.keys(otherValues).length === 3) {

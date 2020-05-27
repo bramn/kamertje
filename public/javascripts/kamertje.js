@@ -5,20 +5,20 @@ new Vue({
   data: {
     playerColor: '',
     player: '',
-    to_move: '',
+    currentPlayer: '',
     rooms: []
   },
   mounted: function () {
     socket.on('updateRoom', (data) => {
       let room = this.rooms.filter(room => room.number == data.number)[0];
       room[data.wall] = data.playerColor;
-      this.to_move = (data.playerColor == 'red') ? 'blue': 'red';
+      this.currentPlayer = (data.playerColor == 'red') ? 'blue': 'red';
     });
 
     // This message is only received once, when the other player is quicker with selecting a color
     socket.on('updateGame', (data) => {
       this.playerColor = data.playerColor;
-      this.to_move = (data.playerColor == 'red') ? 'blue': 'red';
+      this.currentPlayer = (data.playerColor == 'red') ? 'blue': 'red';
       this.player = 'player_two';
       localStorage.player = 'player_two';
     });
@@ -40,21 +40,19 @@ new Vue({
       socket.emit('updateGame', { playerColor: player });
       localStorage.player = 'player_one';
       this.player = 'player_one';
-      this.to_move = player;
+      this.currentPlayer = player;
     },
     async getGame() {
       const response = await fetch('/game');
       const game = await response.json();
 
       this.rooms = game.rooms;
-      this.to_move = game.to_move;
+      this.currentPlayer = game.currentPlayer;
 
-      // If the client and the server knows who is which player than set it
-      if (localStorage.player !== undefined) {
-        if (game[localStorage.player] !== null) {
-          this.player = localStorage.player;
-          this.playerColor = game[localStorage.player];
-        }
+      // If the client and the server both know who is which player than set it
+      if (localStorage.player !== undefined && game[localStorage.player] !== null) {
+        this.player = localStorage.player;
+        this.playerColor = game[localStorage.player];
       }
     },
     isWallDisabled(roomNumber, wall) {
@@ -62,7 +60,7 @@ new Vue({
         return true;
       if (this.winner().length > 0)
         return true;
-      if(this.to_move !== this.playerColor)
+      if(this.currentPlayer !== this.playerColor)
         return true;
 
       let room = this.rooms.filter(room => room.number === roomNumber)[0];
