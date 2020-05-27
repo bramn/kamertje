@@ -134,7 +134,7 @@
       <li v-for="room in sortedRooms" class="kamer">
         <template v-for="wall in ['topWall', 'rightWall', 'bottomWall', 'leftWall']">
           <button href="#" @click="updateRoom(room.number, wall)"
-                  :disabled="checkWall(room.number, wall)"
+                  :disabled="isWallDisabled(room.number, wall)"
                   :class="['muur', wall, room[wall]]"></button>
         </template>
       </li>

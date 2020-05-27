@@ -1,5 +1,5 @@
-var mysql = require('mysql')
-var connection = mysql.createConnection({
+const mysql = require('mysql')
+const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
@@ -10,7 +10,6 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
   if (err) {
     console.error('error connecting: ' + err.stack);
-    return;
   }
 });
 
@@ -38,12 +37,12 @@ const getRooms = function () {
   });
 }
 
-const updateGamePlayers = async function(player) {
+const updateGamePlayers = function(player) {
   return new Promise((resolve, reject) => {
     let otherPlayer = (player == 'red') ? 'blue' : 'red';
     let query = mysql.format('UPDATE games SET to_move = ?, player_one = ?, player_two = ?', [player, player, otherPlayer])
 
-    connection.query(query, function (err, rows, fields) {
+    connection.query(query, function (err, rows) {
       if (err) {
         return reject(err)
       } else {
@@ -57,11 +56,11 @@ const updateToMove = function (toMove) {
   return new Promise((resolve, reject) => {
     let query = mysql.format('UPDATE games SET to_move = ?', [toMove])
 
-    connection.query(query, function (err, rows, fields) {
+    connection.query(query, function (err, results) {
       if (err) {
         return reject(err)
       } else {
-        resolve(rows)
+        resolve(results)
       }
     });
   });

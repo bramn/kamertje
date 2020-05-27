@@ -9,19 +9,17 @@ new Vue({
     rooms: []
   },
   mounted: function () {
-    let self = this;
-
-    socket.on('updateRoom', function(data){
-      let room = self.rooms.filter(room => room.number == data.number)[0];
+    socket.on('updateRoom', (data) => {
+      let room = this.rooms.filter(room => room.number == data.number)[0];
       room[data.wall] = data.playerColor;
-      self.to_move = (data.playerColor == 'red') ? 'blue': 'red';
+      this.to_move = (data.playerColor == 'red') ? 'blue': 'red';
     });
 
-    // This message is only received once, when the other is quicker with selecting a color
-    socket.on('updateGame', function(data){
-      self.playerColor = data.playerColor;
-      self.to_move = (data.playerColor == 'red') ? 'blue': 'red';
-      self.player = 'player_two';
+    // This message is only received once, when the other player is quicker with selecting a color
+    socket.on('updateGame', (data) => {
+      this.playerColor = data.playerColor;
+      this.to_move = (data.playerColor == 'red') ? 'blue': 'red';
+      this.player = 'player_two';
       localStorage.player = 'player_two';
     });
 
@@ -51,6 +49,7 @@ new Vue({
       this.rooms = game.rooms;
       this.to_move = game.to_move;
 
+      // If the client and the server knows who is which player than set it
       if (localStorage.player !== undefined) {
         if (game[localStorage.player] !== null) {
           this.player = localStorage.player;
@@ -58,7 +57,7 @@ new Vue({
         }
       }
     },
-    checkWall(roomNumber, wall) {
+    isWallDisabled(roomNumber, wall) {
       if (this.playerColor.length == 0)
         return true;
       if (this.winner().length > 0)
