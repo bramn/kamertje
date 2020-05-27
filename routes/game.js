@@ -3,7 +3,9 @@ var router = express.Router();
 var Game = require('../controllers/game.js');
 
 router.get('/', function(req, res, next) {
-  res.json(Game.getRooms());
+  Game.getRooms().then(function(result) {
+    res.json(result);
+  })
 });
 
 module.exports = router;

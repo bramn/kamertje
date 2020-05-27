@@ -6,23 +6,26 @@ var connection = mysql.createConnection({
   database: 'kamertje'
 })
 
-connection.connect(function(err) {
+connection.connect(function (err) {
   if (err) {
     console.error('error connecting: ' + err.stack);
     return;
   }
-
   console.log('connected as id ' + connection.threadId);
 });
 
-
-var getRooms = function() {
-  connection.query('SELECT * FROM rooms', function (err, rows, fields) {
-    console.log(rows);
+const getRooms = function () {
+  return new Promise((resolve, reject) =>  {
+    connection.query('SELECT * FROM rooms', function (err, rows, fields) {
+      if (err) {
+        return reject(err)
+      } else {
+        resolve(rows)
+      }
+    });
   });
 }
 
 module.exports = {
   getRooms
 }
-
