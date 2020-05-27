@@ -33,8 +33,26 @@ new Vue({
       this.rooms = await rooms.json();
     },
     checkWall(roomNumber, wall) {
-      let room = this.rooms.filter(room => room.number == roomNumber)[0]
+      if (this.playerColor.length == 0)
+        return true;
+      if (this.winner().length > 0)
+        return true;
+
+      let room = this.rooms.filter(room => room.number === roomNumber)[0];
       return (room[wall] == undefined) ? false: true;
+    },
+    nrOfRooms(color) {
+      return this.rooms.filter(room =>
+        room.topWall === color & room.rightWall === color & room.bottomWall === color & room.leftWall === color
+      ).length
+    },
+    winner() {
+      if(this.nrOfRooms('red') > 4) {
+        return 'Red';
+      } else if (this.nrOfRooms('blue') > 4) {
+        return 'Blue';
+      }
+      return '';
     }
   }
 })

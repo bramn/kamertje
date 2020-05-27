@@ -81,7 +81,7 @@
       width: inherit;
       height: inherit;
     }
-    .muur:hover {
+    .muur:hover:not(:disabled) {
       background-color: #000;
     }
     .muur:disabled {
@@ -120,12 +120,13 @@
   </style>
   <body>
   <div id="kamertje">
+    <div v-if="winner().length > 0" class="win">{{ winner() }} wins</div>
     <h2>Pick your color:</h2>
     <label for="red"><input v-model="playerColor" type="radio" id="red" value="red" />Red</label>
     <label for="blue"><input v-model="playerColor" type="radio" id="blue" value="blue" />Blue</label>
 
     <h2>Building</h2>
-    <ul v-if="playerColor.length > 0" class="building">
+    <ul class="building">
       <li v-for="room in sortedRooms" class="kamer">
         <template v-for="wall in ['topWall', 'rightWall', 'bottomWall', 'leftWall']">
           <button href="#" @click="updateRoom(room.number, wall)"
@@ -134,6 +135,19 @@
         </template>
       </li>
     </ul>
+    <div class="score">
+      <h2>Score</h2>
+      <ul>
+        <li>
+          <h3>Red:</h3>
+          {{ nrOfRooms('red') }}
+        </li>
+        <li>
+          <h3>Blue:</h3>
+          {{ nrOfRooms('blue') }}
+        </li>
+      </ul>
+    </div>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
