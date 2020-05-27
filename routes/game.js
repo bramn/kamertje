@@ -11,6 +11,7 @@ router.get('/', async function (req, res) {
 router.post('/reset', async function(req, res) {
   await Game.resetGame();
   await Game.resetRooms();
+  req.app.io.emit('resetGame');
   res.redirect('/');
 });
 

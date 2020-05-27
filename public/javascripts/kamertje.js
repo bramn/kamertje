@@ -23,6 +23,10 @@ new Vue({
       localStorage.player = 'player_two';
     });
 
+    socket.on('resetGame', () => {
+      location.href = '/';
+    })
+
     this.getGame();
   },
   computed: {
